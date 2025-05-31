@@ -1,0 +1,31 @@
+{
+  "hero": {
+    "greeting": "Hello",
+    "question": "What document do you need to transform today?",
+    "placeholder": "Upload file or paste content to get started..."
+  },
+  "services": {
+    "translate": {
+      "title": "Multi-language Translation",
+      "description": "Translate documents to 100+ languages with AI"
+    },
+    "podcast": {
+      "title": "Create Podcast",
+      "description": "Transform text into professional podcast scripts"
+    },
+    "video": {
+      "title": "Video Script",
+      "description": "Generate video training scripts from documents"
+    },
+    "education": {
+      "title": "Online Course",
+      "description": "Build learning modules from your content"
+    }
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "docs": "Documentation",
+    "contact": "Contact"
+  }
+}

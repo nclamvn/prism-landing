@@ -1,0 +1,31 @@
+{
+  "hero": {
+    "greeting": "Xin chào",
+    "question": "Bạn cần chuyển đổi tài liệu gì hôm nay?",
+    "placeholder": "Upload file hoặc paste nội dung để bắt đầu..."
+  },
+  "services": {
+    "translate": {
+      "title": "Dịch đa ngôn ngữ",
+      "description": "Dịch tài liệu sang 100+ ngôn ngữ với AI"
+    },
+    "podcast": {
+      "title": "Tạo podcast",
+      "description": "Chuyển văn bản thành kịch bản podcast chuyên nghiệp"
+    },
+    "video": {
+      "title": "Video script",
+      "description": "Tạo kịch bản video training từ tài liệu"
+    },
+    "education": {
+      "title": "Khóa học online",
+      "description": "Xây dựng module học tập từ nội dung của bạn"
+    }
+  },
+  "nav": {
+    "features": "Tính năng",
+    "pricing": "Bảng giá",
+    "docs": "Tài liệu",
+    "contact": "Liên hệ"
+  }
+}
