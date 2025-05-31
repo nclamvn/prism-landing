@@ -4,6 +4,13 @@ import { Paperclip, Zap, Sparkles, ChevronDown, Loader2, Languages } from 'lucid
 import { useState } from 'react';
 import { translateText } from '@/lib/api';
 
+interface TranslationResult {
+  original_text: string;
+  translated_text: string;
+  quality_score: number;
+  provider: string;
+}
+
 export default function Hero({ isEnglish }: { isEnglish: boolean }) {
   const [selectedModel, setSelectedModel] = useState('standard');
   const [showModelDropdown, setShowModelDropdown] = useState(false);
@@ -11,7 +18,7 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [inputText, setInputText] = useState('');
   const [isTranslating, setIsTranslating] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<TranslationResult | null>(null);
   const [error, setError] = useState('');
   
   const languages = [
@@ -67,7 +74,8 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
     try {
       const response = await translateText(inputText, selectedLanguage);
       setResult(response);
-    } catch (err) {
+    } catch (error) {
+      console.error('Translation error:', error);
       setError('Translation failed. Please try again.');
     } finally {
       setIsTranslating(false);
