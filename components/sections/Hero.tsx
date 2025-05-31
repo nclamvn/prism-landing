@@ -2,7 +2,7 @@
 
 import { Paperclip, Zap, Sparkles, ChevronDown, Loader2, Languages, CornerDownLeft } from 'lucide-react';
 import { useState } from 'react';
-import { translateText } from '@/src/lib/api';
+import { translateText } from '@/lib/api';
 
 interface TranslationResult {
   original_text: string;
