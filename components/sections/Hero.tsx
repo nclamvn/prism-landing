@@ -1,11 +1,29 @@
 "use client";
 
-import { Paperclip, Zap, Sparkles, ChevronDown } from 'lucide-react';
+import { Paperclip, Zap, Sparkles, ChevronDown, Loader2, Languages } from 'lucide-react';
 import { useState } from 'react';
+import { translateText } from '@/lib/api';
 
 export default function Hero({ isEnglish }: { isEnglish: boolean }) {
   const [selectedModel, setSelectedModel] = useState('standard');
   const [showModelDropdown, setShowModelDropdown] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(isEnglish ? 'vi' : 'en');
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+  const [inputText, setInputText] = useState('');
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState('');
+  
+  const languages = [
+    { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'ko', name: '한국어', flag: '🇰🇷' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' }
+  ];
   
   const content = {
     vi: {
@@ -14,7 +32,12 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
       question: "Bạn cần chuyển đổi tài liệu gì hôm nay?",
       placeholder: "Upload file hoặc paste nội dung để bắt đầu...",
       standard: "Tiêu chuẩn",
-      advanced: "Nâng cao"
+      advanced: "Nâng cao",
+      translating: "Đang xử lý...",
+      result: "Kết quả",
+      original: "Gốc",
+      translated: "Đã dịch",
+      quality: "Chất lượng"
     },
     en: {
       greeting: "Hello",
@@ -22,11 +45,41 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
       question: "What document do you need to transform today?",
       placeholder: "Upload file or paste content to get started...",
       standard: "Standard",
-      advanced: "Advanced"
+      advanced: "Advanced",
+      translating: "Processing...",
+      result: "Result",
+      original: "Original",
+      translated: "Translated",
+      quality: "Quality"
     }
   };
   
   const t = isEnglish ? content.en : content.vi;
+  const selectedLang = languages.find(lang => lang.code === selectedLanguage);
+  
+  const handleTranslate = async () => {
+    if (!inputText.trim()) return;
+    
+    setIsTranslating(true);
+    setError('');
+    setResult(null);
+    
+    try {
+      const response = await translateText(inputText, selectedLanguage);
+      setResult(response);
+    } catch (err) {
+      setError('Translation failed. Please try again.');
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+  
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleTranslate();
+    }
+  };
   
   return (
     <div className="min-h-[65vh] flex flex-col items-center justify-center px-4 py-12">
@@ -42,14 +95,61 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
       <div className="w-full max-w-3xl">
         <div className="relative bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
           <textarea
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyPress={handleKeyPress}
             placeholder={t.placeholder}
-            className="w-full px-6 py-5 pr-48 text-base bg-transparent resize-none 
+            className="w-full px-6 py-5 pr-80 text-base bg-transparent resize-none 
                      focus:outline-none min-h-[120px] rounded-2xl"
             rows={3}
+            disabled={isTranslating}
           />
           
+          {/* Bottom controls - Left side: Language selector */}
+          <div className="absolute bottom-4 left-4">
+            <div className="relative">
+              <button
+                onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 
+                         hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={isTranslating}
+              >
+                <Languages className="w-4 h-4 text-black" />
+                <span className="flex items-center space-x-1">
+                  <span>{selectedLang?.flag}</span>
+                  <span className="hidden sm:inline">{selectedLang?.name}</span>
+                </span>
+                <ChevronDown className="w-3 h-3 text-black" />
+              </button>
+              
+              {showLanguageDropdown && (
+                <div className="absolute bottom-full mb-1 left-0 bg-white border border-gray-200 
+                              rounded-lg shadow-lg py-1 w-48 z-10 max-h-60 overflow-y-auto">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setSelectedLanguage(lang.code);
+                        setShowLanguageDropdown(false);
+                      }}
+                      className={`w-full px-4 py-2 text-sm text-left hover:bg-gray-100 flex items-center space-x-3
+                                ${lang.code === selectedLanguage ? 'bg-blue-50 text-blue-600' : ''}`}
+                    >
+                      <span>{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Bottom controls - Right side: File, Model, Enter */}
           <div className="absolute bottom-4 right-4 flex items-center space-x-3">
-            <button className="p-2.5 hover:bg-gray-100 rounded-lg transition-colors">
+            <button 
+              className="p-2.5 hover:bg-gray-100 rounded-lg transition-colors"
+              disabled={isTranslating}
+            >
               <Paperclip className="w-4 h-4 text-black" />
             </button>
             
@@ -58,6 +158,7 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
                 onClick={() => setShowModelDropdown(!showModelDropdown)}
                 className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 
                          hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={isTranslating}
               >
                 {selectedModel === 'standard' ? 
                   <Zap className="w-4 h-4 text-black" strokeWidth={2} /> : 
@@ -69,7 +170,7 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
               
               {showModelDropdown && (
                 <div className="absolute bottom-full mb-1 right-0 bg-white border border-gray-200 
-                              rounded-lg shadow-lg py-1 w-40">
+                              rounded-lg shadow-lg py-1 w-40 z-10">
                   <button
                     onClick={() => {
                       setSelectedModel('standard');
@@ -93,8 +194,55 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
                 </div>
               )}
             </div>
+            
+            <button
+              onClick={handleTranslate}
+              disabled={isTranslating || !inputText.trim()}
+              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 
+                       transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed
+                       flex items-center space-x-2"
+            >
+              {isTranslating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>{t.translating}</span>
+                </>
+              ) : (
+                <span>Enter ⏎</span>
+              )}
+            </button>
           </div>
         </div>
+        
+        {error && (
+          <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-lg">
+            {error}
+          </div>
+        )}
+        
+        {result && (
+          <div className="mt-6 bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+            <h3 className="text-lg font-semibold">{t.result}</h3>
+            
+            <div className="space-y-3">
+              <div>
+                <p className="text-sm text-gray-500 mb-1">{t.original}:</p>
+                <p className="text-gray-800">{result.original_text}</p>
+              </div>
+              
+              <div>
+                <p className="text-sm text-gray-500 mb-1">{t.translated}:</p>
+                <p className="text-gray-800 font-medium">{result.translated_text}</p>
+              </div>
+              
+              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                <span>{t.quality}: {Math.round(result.quality_score * 100)}%</span>
+                <span>Provider: {result.provider}</span>
+                <span>→ {selectedLang?.name}</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
