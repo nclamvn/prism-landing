@@ -1,6 +1,6 @@
 "use client";
 
-import { Paperclip, Zap, Sparkles, ChevronDown, Loader2, Languages } from 'lucide-react';
+import { Paperclip, Zap, Sparkles, ChevronDown, Loader2, Languages, CornerDownLeft } from 'lucide-react';
 import { useState } from 'react';
 import { translateText } from '@/lib/api';
 
@@ -107,7 +107,7 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
             onChange={(e) => setInputText(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={t.placeholder}
-            className="w-full px-6 py-5 pr-80 text-base bg-transparent resize-none 
+            className="w-full px-6 py-5 pr-64 text-base bg-transparent resize-none 
                      focus:outline-none min-h-[120px] rounded-2xl"
             rows={3}
             disabled={isTranslating}
@@ -118,16 +118,16 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
             <div className="relative">
               <button
                 onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 
+                className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-500 
                          hover:bg-gray-100 rounded-lg transition-colors"
                 disabled={isTranslating}
               >
-                <Languages className="w-4 h-4 text-black" />
+                <Languages className="w-4 h-4 text-gray-500" />
                 <span className="flex items-center space-x-1">
                   <span>{selectedLang?.flag}</span>
                   <span className="hidden sm:inline">{selectedLang?.name}</span>
                 </span>
-                <ChevronDown className="w-3 h-3 text-black" />
+                <ChevronDown className="w-3 h-3 text-gray-500" />
               </button>
               
               {showLanguageDropdown && (
@@ -158,22 +158,22 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
               className="p-2.5 hover:bg-gray-100 rounded-lg transition-colors"
               disabled={isTranslating}
             >
-              <Paperclip className="w-4 h-4 text-black" />
+              <Paperclip className="w-4 h-4 text-gray-500" />
             </button>
             
             <div className="relative">
               <button
                 onClick={() => setShowModelDropdown(!showModelDropdown)}
-                className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 
+                className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-500 
                          hover:bg-gray-100 rounded-lg transition-colors"
                 disabled={isTranslating}
               >
                 {selectedModel === 'standard' ? 
-                  <Zap className="w-4 h-4 text-black" strokeWidth={2} /> : 
-                  <Sparkles className="w-4 h-4 text-black" strokeWidth={2} />
+                  <Zap className="w-4 h-4 text-gray-500" strokeWidth={2} /> : 
+                  <Sparkles className="w-4 h-4 text-gray-500" strokeWidth={2} />
                 }
                 <span>{selectedModel === 'standard' ? t.standard : t.advanced}</span>
-                <ChevronDown className="w-3 h-3 text-black" />
+                <ChevronDown className="w-3 h-3 text-gray-500" />
               </button>
               
               {showModelDropdown && (
@@ -186,7 +186,7 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
                     }}
                     className="w-full px-4 py-2 text-sm text-left hover:bg-gray-100 flex items-center space-x-2"
                   >
-                    <Zap className="w-4 h-4 text-black" strokeWidth={2} />
+                    <Zap className="w-4 h-4 text-gray-500" strokeWidth={2} />
                     <span>{t.standard}</span>
                   </button>
                   <button
@@ -196,7 +196,7 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
                     }}
                     className="w-full px-4 py-2 text-sm text-left hover:bg-gray-100 flex items-center space-x-2"
                   >
-                    <Sparkles className="w-4 h-4 text-black" strokeWidth={2} />
+                    <Sparkles className="w-4 h-4 text-gray-500" strokeWidth={2} />
                     <span>{t.advanced}</span>
                   </button>
                 </div>
@@ -206,9 +206,9 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
             <button
               onClick={handleTranslate}
               disabled={isTranslating || !inputText.trim()}
-              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 
-                       transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed
-                       flex items-center space-x-2"
+              className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-500 
+                       hover:bg-gray-100 rounded-lg transition-colors
+                       disabled:text-gray-400 disabled:cursor-not-allowed disabled:hover:bg-transparent"
             >
               {isTranslating ? (
                 <>
@@ -216,7 +216,10 @@ export default function Hero({ isEnglish }: { isEnglish: boolean }) {
                   <span>{t.translating}</span>
                 </>
               ) : (
-                <span>Enter ⏎</span>
+                <>
+                  <CornerDownLeft className="w-4 h-4" />
+                  <span>Enter</span>
+                </>
               )}
             </button>
           </div>
